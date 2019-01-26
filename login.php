@@ -7,7 +7,7 @@ $email = $data['email'];
 $password = $data['password'];
 $crypt_password = password_hash($password, PASSWORD_DEFAULT);
 
-$dbc = mysqli_connect("localhost", "root", "", "host1664981_users");
+$dbc = mysqli_connect("localhost", "host1664981", "qwerty123", "host1664981_users");
 
 $query = "SELECT * from `users` where email='$email' or login='$login'";
 
@@ -31,7 +31,7 @@ $result = mysqli_query($dbc, $query) or die("Запрос прошел неуд�
             $db_email = $row['email'];
             $db_uid = $row["unique_id"];
             $db_created_at = $row['date'];
-            $response = array("errors"=>$errors, "uid"=>$db_uid, "user"=>array("login"=>$db_login, "email"=>$db_email, "created_at"=>$db_created_at));
+            $response = array("error"=>count($errors), "uid"=>$db_uid, "user"=>array("login"=>$db_login, "email"=>$db_email, "created_at"=>$db_created_at));
             echo json_encode($response);
         }
         else

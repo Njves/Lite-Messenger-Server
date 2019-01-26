@@ -1,14 +1,52 @@
 <?php 
+require_once "raw_database.php";
 $data = $_POST;
-$dbc = mysqli_connect("localhost", "root", "", "host1664981_users");
+
+class Message
+{
+    
+    protected $unique_id;
+    protected $user_sender;
+    protected $user_reciver;
+    protected $text;
+    protected $flags;
+    protected $time;
+    protected   $mysqli;
+    
+    function __construct($unique_id, $user_sender, $user_reciver, $text, $flags,$time)
+    {
+        $this->unique_id = $unique_id;
+        $this->user_sender = $user_sender;
+        $this->user_reciver = $user_reciver;
+        $this->text = $text;
+        $this->flags = $flags;
+        $this->time = $time;
+        $this->mysqli = new mysqli("localhost", "host1664981", "qwerty123", "host1664981_users");
+        
+        
+        
+    }
+     function write_message_to_user()
+     {
+        $query = "INSERT INTO `user_message`(`unique_id`, `user_sender`, `user_reciver`, `text`, `flags`,`time`) VALUES ('$this->unique_id','$this->user_sender','$this->user_reciver', '$this->text','$this->flags','$this->time')";
+        if($this->mysqli->query($query)==true)
+        {
+            $response = array("unique_id"=>$this->unique_id,"user_sender"=>$this->user_sender, "user_reciver"=>$this->user_reciver,"text"=>$this->text, "flags"=> $this->flags, $this->time);
+            echo json_encode($response, JSON_UNESCAPED_UNICODE);
+        }
+        else
+        {
+           echo $this->mysqli->error();
+        }
+        $this->mysqli->close();
+     }
+     
+}
 class MessageUserStorage
 {
     public $unique_id;
-    public $text;
-    public $user_sender;
-    public $user_reciver;
-    public $flags;
-    public $time;
+    
+    
     
 }
 class User
@@ -17,14 +55,20 @@ class User
     private $email;
     private $user_unique_id;
     private $session;
+    private $mysqli;
     function __construct($login, $email, $uniqid, $session)
     {
         $this->login = $login;
         $this->email = $email;
         $this->user_unique_id = $uniqid;
         $this->session=$session;
+        $mysqli = new mysqli("localhost", "root", "", "host1664981_users");
+        if($mysqli->connect_errno)
+        {
+            echo "Ошибка подключения ".$mysqli->connect_error;
+        }
     }
-    function get_login($dbc)
+    function get_login()
     {
         $query = "SELECT * FROM `users` where login='$this->login' and email='$this->email'";
         $result = mysqli_query($dbc, $query) or die("Ошибка запроса логина ".mysqli_error($dbc));
@@ -32,42 +76,25 @@ class User
         return $result_array;
     }
 }
-$msgUserStorage = new MessageUserStorage();
-$msgUserStorage->unique_id = uniqid('',true);
-$msgUserStorage->text = $data['text'];
-$msgUserStorage->user_sender = $data['user_sender'];
-$msgUserStorage->user_reciver = $data['user_reciver'];
-$msgUserStorage->flags = 0;
-$msgUserStorage->time = time();
+
+    if(isset($data['login']))
+    {
+        $login = $data['login'];
+    }
+    if(isset($data['user_reciver']))
+    {
+        $user_reciver = htmlspecialchars($data['user_reciver']);
+    }
+    if(isset($data['text']))
+    {
+        $text = htmlspecialchars($data['text']);
+    }
+    
+    $message = new Message(uniqid("", true),$login,$user_reciver,$text, 0,time());
+    $message->write_message_to_user();
+    
 
 
-$user = new User("SuperSukaLesha", "LeshaSukaMeow@mail.ru", "240727534", 1);
-
-echo json_encode($user->get_login($dbc));
-
-$query = "INSERT INTO `user_message`(`unique_id`, `user_sender`, `user_reciver`, `text`, `flags`,`time`) VALUES ('$msgUserStorage->unique_id','$msgUserStorage->user_sender','$msgUserStorage->user_reciver', '$msgUserStorage->text','$msgUserStorage->flags','$msgUserStorage->time')";
-
-$result = mysqli_query($dbc, $query) or die("Ошибка запроса ".mysqli_error($dbc));
-
-
-
-/*$data = $_POST;
-if(isset($data['message']))
-{
-    $message = $data['message'];
-}
-if(isset($data['user_sender']))
-{
-    $user_sender = $data['user_sender'];
-}
-if(isset($data['user_reciver']))
-{
-    $user_reciver = $data['user_reciver'];
-}
-$date = time();
-
-echo $data."<br/>";
-echo $date;*/
 
 
 ?>

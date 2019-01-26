@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Write message</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" media="screen" href="main.css" />
+    <script src="main.js"></script>
+</head>
+<body>
+    <form method="POST" action="message_engine.php">
+        <label>Ваш логин</label>
+        <input type="text" name="login"><br/>
+        <label>Введите сообщение...</label>
+        <input type="text" name="text"><br/>
+        <label>Кому вы хотите написать</label>
+        <input type="text" name="user_reciver"><br/>
+        <input type="submit">
+    </form>
+</body>
+</html>

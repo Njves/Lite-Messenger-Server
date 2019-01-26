@@ -1,6 +1,6 @@
 <?php
 
-$filePath = "litemessenger.txt";
+$filePath = "lt.apk";
 function file_force_download($file) {
     if (file_exists($file)) {
       // сбрасываем буфер вывода PHP, чтобы избежать переполнения памяти выделенной под скрипт

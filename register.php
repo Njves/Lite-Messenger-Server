@@ -53,7 +53,8 @@ if(empty($errors))
     $user->session = true;
     R::store($user);
 
-    $json_response = array("error"=>$errors, "uid"=>$uid, "user"=>array("login"=>$data['login'],"email"=>$data['email'],"created_at"=>date("Y-m-d H:i:s")));
+    $json_response = array("error"=>count($errors), "uid"=>$uid, "user"=>array("login"=>$data['login'],"email"=>$data['email'],"created_at"=>date("Y-m-d H:i:s")));
+    
     echo json_encode($json_response);
 
     
