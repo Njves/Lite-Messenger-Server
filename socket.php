@@ -1,15 +1,28 @@
 <?php
-
-$socket = stream_socket_server("tcp://127.0.0.1:8000", $errno, $errstr);
-
-if (!$socket) {
-    die("$errstr ($errno)\n");
-}
-
-while ($connect = stream_socket_accept($socket, -1)) {
-    fwrite($connect, "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nConnection: close\r\n\r\nПривет");
-    fclose($connect);
-}
-
-fclose($socket);
+ 
+  $address = "127.0.0.1";
+  $port = 4545;
+   
+  $socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
+   
+  if( !$socket ) exit( socket_strerror( socket_last_error() ) );
+  else echo 'Socket_created!'."\r\n";
+   
+  if( !socket_bind($socket, $address, $port) ) exit( socket_strerror( socket_last_error() ) );
+  else echo 'Socket_binded!'."\r\n";
+   
+  if( !socket_listen($socket, 10) ) exit( socket_strerror( socket_last_error() ) );
+  else echo 'Socket_listen!'."\r\n";
+   
+  $connect = socket_accept($socket);
+   
+  $result = socket_read($connect,1024);
+   
+  echo 'Common data: '.$result."\r\n";
+   
+  socket_write($connect,'You sending me: '.$result."\r\n");
+   
+  socket_shutdown($connect);
+  socket_close($socket);
+   
 ?>

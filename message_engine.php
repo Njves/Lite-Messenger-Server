@@ -7,11 +7,11 @@ class Message
     
     protected $unique_id;
     protected $user_sender;
-    protected $user_reciver;
     protected $text;
     protected $flags;
     protected $time;
-    protected   $mysqli;
+    protected $user_reciver;
+    protected $mysqli;
     
     function __construct($unique_id, $user_sender, $user_reciver, $text, $flags,$time)
     {
@@ -42,13 +42,7 @@ class Message
      }
      
 }
-class MessageUserStorage
-{
-    public $unique_id;
-    
-    
-    
-}
+
 class User
 {
     private $login;
@@ -77,10 +71,7 @@ class User
     }
 }
 
-    if(isset($data['login']))
-    {
-        $login = $data['login'];
-    }
+    
     if(isset($data['user_reciver']))
     {
         $user_reciver = htmlspecialchars($data['user_reciver']);
@@ -89,8 +80,12 @@ class User
     {
         $text = htmlspecialchars($data['text']);
     }
+    if(isset($data['user_sender']))
+    {
+        $user_sender = $data['user_sender'];
+    }
     
-    $message = new Message(uniqid("", true),$login,$user_reciver,$text, 0,time());
+    $message = new Message(uniqid("", true),$user_sender,$user_reciver,$text, 0,time());
     $message->write_message_to_user();
     
 
